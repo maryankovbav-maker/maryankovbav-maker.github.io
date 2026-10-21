@@ -1,0 +1,963 @@
+<!doctype html>
+<html lang="en" class="l-en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Maryan Kovba · CAD Design & Prototyping</title>
+<meta name="description" content="Mechanical Engineering student. CAD design in Fusion 360 and SolidWorks, design for 3D printing and working prototypes. Available for remote freelance work and internships.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --ink: #142033;
+    --ink-2: #3a4a60;
+    --muted: #66758a;
+    --line: #dfe5ee;
+    --surface: #ffffff;
+    --paper: #f3f6fa;
+    --dot: #cfd8e4;
+    --navy: #0f2238;
+    --navy-2: #163152;
+    --navy-line: rgba(140, 200, 255, .09);
+    --accent: #1f9fd0;
+    --accent-2: #4cc3f0;
+    --accent-ink: #0d6c92;
+    --accent-soft: #e2f3fb;
+    --warm: #ff9f43;
+    --radius: 16px;
+    --shadow: 0 1px 2px rgba(16,24,40,.05), 0 10px 28px rgba(16,24,40,.07);
+    --mono: "JetBrains Mono", ui-monospace, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body { margin: 0; background: var(--paper); color: var(--ink); font: 16px/1.6 Inter, "Segoe UI", system-ui, sans-serif; -webkit-font-smoothing: antialiased; }
+  img { max-width: 100%; display: block; }
+  a { color: inherit; }
+  button { font: inherit; }
+  h1, h2, h3 { line-height: 1.12; margin: 0; letter-spacing: -.015em; }
+  .wrap { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+  .eyebrow { font-family: var(--mono); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; color: var(--accent); }
+  .eyebrow::before { content: "// "; opacity: .6; }
+
+  /* Idiomas */
+  html.l-en [lang="es"]:not(html), html.l-es [lang="en"]:not(html) { display: none !important; }
+
+  /* Barra de progreso */
+  .progress { position: fixed; top: 0; left: 0; height: 3px; width: 100%; transform-origin: 0 50%; transform: scaleX(0); background: linear-gradient(90deg, var(--accent), var(--accent-2), var(--warm)); z-index: 50; }
+
+  /* Navegación */
+  .nav { position: sticky; top: 0; z-index: 30; background: rgba(15,34,56,.86); backdrop-filter: blur(12px); color: #fff; border-bottom: 1px solid rgba(255,255,255,.06); }
+  .nav .wrap { display: flex; align-items: center; gap: 20px; height: 62px; }
+  .brand { display: flex; align-items: center; gap: 10px; font-weight: 800; letter-spacing: .08em; text-decoration: none; white-space: nowrap; }
+  .brand span { color: var(--accent-2); }
+  .gear { width: 26px; height: 26px; color: var(--accent-2); transition: transform .1s linear; }
+  .nav-links { display: flex; gap: 6px; margin-left: auto; font-size: 14px; }
+  .nav-links a { text-decoration: none; color: #b8c6d8; padding: 6px 10px; border-radius: 8px; transition: background .2s, color .2s; }
+  .nav-links a:hover, .nav-links a.active { color: #fff; background: rgba(255,255,255,.08); }
+  .lang { display: flex; border: 1px solid rgba(255,255,255,.18); border-radius: 999px; overflow: hidden; }
+  .lang button { background: none; border: 0; color: #b8c6d8; font: 600 12px/1 Inter, sans-serif; padding: 7px 11px; cursor: pointer; }
+  .lang button[aria-pressed="true"] { background: var(--accent); color: #fff; }
+
+  .btn { position: relative; display: inline-flex; align-items: center; gap: 8px; border-radius: 12px; padding: 12px 18px; font-weight: 600; font-size: 15px; text-decoration: none; border: 1px solid transparent; cursor: pointer; transition: transform .2s, background .2s, box-shadow .2s; }
+  .btn:hover { transform: translateY(-2px); }
+  .btn-primary { background: var(--accent); color: #fff; box-shadow: 0 8px 24px rgba(31,159,208,.35); }
+  .btn-primary:hover { background: var(--accent-ink); }
+  .btn-ghost { border-color: rgba(255,255,255,.22); color: #fff; background: rgba(255,255,255,.03); }
+  .btn-ghost:hover { background: rgba(255,255,255,.1); }
+  .btn .arr { transition: transform .2s; }
+  .btn:hover .arr { transform: translateX(3px); }
+
+  /* ===== HERO: plano técnico interactivo ===== */
+  .hero { --mx: 70%; --my: 40%; position: relative; overflow: hidden; color: #fff; cursor: crosshair;
+    background: radial-gradient(1200px 600px at 85% -10%, #1d4670 0%, transparent 60%), var(--navy); }
+  .blueprint, .blueprint-glow { position: absolute; inset: 0; pointer-events: none;
+    background-image:
+      linear-gradient(var(--navy-line) 1px, transparent 1px), linear-gradient(90deg, var(--navy-line) 1px, transparent 1px),
+      linear-gradient(rgba(140,200,255,.04) 1px, transparent 1px), linear-gradient(90deg, rgba(140,200,255,.04) 1px, transparent 1px);
+    background-size: 96px 96px, 96px 96px, 24px 24px, 24px 24px; }
+  .blueprint-glow { background-image:
+      linear-gradient(rgba(76,195,240,.55) 1px, transparent 1px), linear-gradient(90deg, rgba(76,195,240,.55) 1px, transparent 1px),
+      linear-gradient(rgba(76,195,240,.22) 1px, transparent 1px), linear-gradient(90deg, rgba(76,195,240,.22) 1px, transparent 1px);
+    -webkit-mask-image: radial-gradient(220px circle at var(--mx) var(--my), #000 0%, transparent 70%);
+            mask-image: radial-gradient(220px circle at var(--mx) var(--my), #000 0%, transparent 70%); }
+  .spot { position: absolute; inset: 0; pointer-events: none; background: radial-gradient(420px circle at var(--mx) var(--my), rgba(31,159,208,.16), transparent 65%); }
+  .xh { position: absolute; pointer-events: none; opacity: 0; transition: opacity .25s; }
+  .hero.hovering .xh { opacity: 1; }
+  .xh-h { left: 0; right: 0; top: var(--my); height: 1px; background: linear-gradient(90deg, transparent, rgba(76,195,240,.5) 20%, rgba(76,195,240,.5) 80%, transparent); }
+  .xh-v { top: 0; bottom: 0; left: var(--mx); width: 1px; background: linear-gradient(180deg, transparent, rgba(76,195,240,.5) 20%, rgba(76,195,240,.5) 80%, transparent); }
+  .xh-label { left: var(--mx); top: var(--my); transform: translate(12px, 12px); font: 500 11px var(--mono); color: var(--accent-2); background: rgba(15,34,56,.85); border: 1px solid rgba(76,195,240,.35); border-radius: 6px; padding: 3px 7px; white-space: nowrap; }
+  /* cotas decorativas de plano */
+  .dim-line { position: absolute; pointer-events: none; font: 500 10px var(--mono); color: rgba(140,200,255,.45); }
+  .dim-a { left: 24px; bottom: 26px; right: 55%; border-top: 1px solid rgba(140,200,255,.25); padding-top: 4px; text-align: center; }
+  .dim-a::before, .dim-a::after { content: ""; position: absolute; top: -5px; width: 1px; height: 9px; background: rgba(140,200,255,.35); }
+  .dim-a::before { left: 0; } .dim-a::after { right: 0; }
+  .titleblock { position: absolute; right: 24px; bottom: 20px; font: 500 10px var(--mono); color: rgba(140,200,255,.5); border: 1px solid rgba(140,200,255,.22); display: grid; grid-template-columns: auto auto; }
+  .titleblock span { padding: 3px 8px; border-right: 1px solid rgba(140,200,255,.22); border-bottom: 1px solid rgba(140,200,255,.22); }
+  .titleblock span:nth-child(2n) { border-right: 0; } .titleblock span:nth-last-child(-n+2) { border-bottom: 0; }
+
+  .hero .wrap { position: relative; display: grid; grid-template-columns: 1.08fr .92fr; gap: 56px; padding-top: 84px; padding-bottom: 96px; align-items: center; }
+  .hero h1 { font-size: clamp(42px, 6.4vw, 68px); font-weight: 800; letter-spacing: -.03em; margin: 14px 0 10px; }
+  .hero h1 .hl { background: linear-gradient(90deg, #fff, var(--accent-2)); -webkit-background-clip: text; background-clip: text; color: transparent; }
+  .role { font-size: clamp(18px, 2.2vw, 22px); color: #bfe6f6; font-weight: 500; }
+  .typer { font-family: var(--mono); font-size: 15px; color: #8fb3cf; margin-top: 14px; min-height: 24px; }
+  .typer b { color: var(--warm); font-weight: 700; }
+  .typer .caret { display: inline-block; width: 8px; height: 17px; background: var(--accent-2); vertical-align: -3px; margin-left: 2px; animation: blink 1s steps(1) infinite; }
+  @keyframes blink { 50% { opacity: 0; } }
+  .hero p.lead { color: #c4d1e0; font-size: 17px; max-width: 540px; margin: 18px 0 28px; }
+  .hero .cta { display: flex; gap: 12px; flex-wrap: wrap; }
+  .stats { display: grid; grid-template-columns: repeat(3, 1fr); gap: 1px; background: rgba(140,200,255,.18); border-radius: 14px; overflow: hidden; margin-top: 36px; max-width: 540px; border: 1px solid rgba(140,200,255,.18); }
+  .stat { background: rgba(15,34,56,.9); padding: 14px 16px; }
+  .stat b { display: block; font-size: 24px; font-family: var(--mono); color: #fff; }
+  .stat span { font-size: 13px; color: #9fb2c7; }
+
+  /* Collage del hero: cada foto lleva a su proyecto */
+  .collage { display: grid; grid-template-columns: 1fr 1fr; grid-template-rows: 180px 180px; gap: 14px; perspective: 900px; }
+  .shot { position: relative; padding: 0; border: 1px solid rgba(140,200,255,.25); border-radius: 14px; overflow: hidden; cursor: pointer; background: #0b1a2c; transition: transform .35s cubic-bezier(.2,.8,.2,1), box-shadow .35s, border-color .35s; }
+  .shot:first-child { grid-row: span 2; }
+  .shot img { width: 100%; height: 100%; object-fit: cover; transition: transform .6s, filter .4s; filter: saturate(.9); }
+  .shot .lbl { position: absolute; left: 10px; bottom: 10px; right: 10px; display: flex; justify-content: space-between; align-items: center; font: 600 13px Inter, sans-serif; color: #fff; background: rgba(15,34,56,.82); border: 1px solid rgba(140,200,255,.25); border-radius: 10px; padding: 7px 10px; transform: translateY(8px); opacity: 0; transition: .3s; backdrop-filter: blur(6px); }
+  .shot:hover, .shot:focus-visible { transform: translateY(-4px) rotate(-.6deg); border-color: var(--accent-2); box-shadow: 0 20px 40px rgba(0,0,0,.35), 0 0 0 1px var(--accent-2); outline: none; }
+  .shot:nth-child(2):hover { transform: translateY(-4px) rotate(.6deg); }
+  .shot:hover img { transform: scale(1.06); filter: saturate(1.1); }
+  .shot:hover .lbl, .shot:focus-visible .lbl { transform: none; opacity: 1; }
+  .shot .pin { position: absolute; top: 10px; left: 10px; font: 700 11px var(--mono); color: var(--navy); background: var(--accent-2); border-radius: 6px; padding: 2px 6px; }
+
+  /* Secciones claras: papel punteado de cuaderno técnico */
+  section { padding: 92px 0; position: relative; }
+  .paper { background-color: var(--paper); background-image: radial-gradient(var(--dot) 1px, transparent 1.2px); background-size: 22px 22px; }
+  .paper-alt { background-color: #eef3f8; background-image: linear-gradient(rgba(20,32,51,.045) 1px, transparent 1px), linear-gradient(90deg, rgba(20,32,51,.045) 1px, transparent 1px); background-size: 28px 28px; }
+  .section-head { margin-bottom: 36px; }
+  .section-head h2 { font-size: clamp(30px, 4.2vw, 42px); margin-top: 8px; }
+  .section-head p { color: var(--muted); margin: 10px 0 0; max-width: 660px; }
+
+  /* Sobre mí */
+  .about-grid { display: grid; grid-template-columns: 1.4fr 1fr; gap: 40px; }
+  .about-grid p { margin: 0 0 14px; color: var(--ink-2); font-size: 17px; }
+  .facts { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 24px; box-shadow: var(--shadow); position: relative; }
+  .facts::before { content: "SPEC SHEET"; position: absolute; top: -10px; left: 18px; font: 700 10px var(--mono); letter-spacing: .12em; background: var(--ink); color: #fff; padding: 3px 8px; border-radius: 4px; }
+  .facts dl { margin: 0; display: grid; grid-template-columns: auto 1fr; gap: 10px 16px; font-size: 15px; }
+  .facts dt { color: var(--muted); font-family: var(--mono); font-size: 13px; padding-top: 2px; }
+  .facts dd { margin: 0; font-weight: 600; }
+
+  /* Filtros por habilidad */
+  .filters { display: flex; flex-wrap: wrap; gap: 8px; margin: -12px 0 28px; }
+  .filter { border: 1px solid var(--line); background: var(--surface); color: var(--ink-2); border-radius: 999px; padding: 8px 14px; font-size: 14px; font-weight: 500; cursor: pointer; transition: .2s; display: inline-flex; gap: 8px; align-items: center; }
+  .filter .n { font: 600 11px var(--mono); background: var(--paper); color: var(--muted); border-radius: 999px; padding: 1px 7px; }
+  .filter:hover { border-color: var(--accent); color: var(--accent-ink); transform: translateY(-1px); }
+  .filter[aria-pressed="true"] { background: var(--ink); color: #fff; border-color: var(--ink); }
+  .filter[aria-pressed="true"] .n { background: var(--accent); color: #fff; }
+
+  /* Tarjetas de proyecto: inclinación 3D + foto → CAD */
+  .projects { display: grid; grid-template-columns: repeat(3, 1fr); gap: 26px; perspective: 1200px; }
+  .project { transition: opacity .35s, filter .35s, transform .35s; }
+  .project.dim { opacity: .28; filter: grayscale(1); transform: scale(.97); }
+  .project.flash .card { animation: flash 1.2s; }
+  @keyframes flash { 0%, 100% { box-shadow: var(--shadow); } 30% { box-shadow: 0 0 0 4px var(--accent-2), var(--shadow); } }
+  .card { --rx: 0deg; --ry: 0deg; --gx: 50%; --gy: 50%; background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow); display: flex; flex-direction: column; height: 100%; transform: rotateX(var(--rx)) rotateY(var(--ry)); transform-style: preserve-3d; transition: transform .25s ease-out, box-shadow .25s; cursor: pointer; position: relative; }
+  .card:hover { box-shadow: 0 2px 4px rgba(16,24,40,.06), 0 26px 50px rgba(16,24,40,.16); }
+  .card::after { content: ""; position: absolute; inset: 0; pointer-events: none; background: radial-gradient(400px circle at var(--gx) var(--gy), rgba(255,255,255,.35), transparent 45%); opacity: 0; transition: opacity .3s; }
+  .card:hover::after { opacity: 1; }
+  .thumb { position: relative; aspect-ratio: 4 / 3; overflow: hidden; background: #e7edf3; }
+  .thumb img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; transition: opacity .5s, transform .6s; }
+  .thumb img.alt { opacity: 0; object-fit: contain; background: #f2f5f9; padding: 8px; }
+  .card:hover .thumb img.main { opacity: 0; transform: scale(1.05); }
+  .card:hover .thumb img.alt { opacity: 1; }
+  .view-tag { position: absolute; top: 12px; right: 12px; display: flex; border-radius: 8px; overflow: hidden; font: 700 10px var(--mono); letter-spacing: .08em; box-shadow: 0 4px 10px rgba(0,0,0,.15); }
+  .view-tag span { padding: 4px 8px; background: rgba(255,255,255,.92); color: var(--muted); transition: .3s; }
+  .view-tag .v1 { background: var(--ink); color: #fff; }
+  .card:hover .view-tag .v1 { background: rgba(255,255,255,.92); color: var(--muted); }
+  .card:hover .view-tag .v2 { background: var(--accent); color: #fff; }
+  .open-hint { position: absolute; left: 12px; bottom: 12px; font: 600 13px Inter, sans-serif; color: #fff; background: var(--ink); border-radius: 999px; padding: 6px 12px; transform: translateY(14px); opacity: 0; transition: .3s; }
+  .card:hover .open-hint { transform: none; opacity: 1; }
+  .card .body { padding: 20px 20px 22px; display: flex; flex-direction: column; flex: 1; }
+  .badge { display: inline-block; font-family: var(--mono); font-size: 11px; letter-spacing: .06em; text-transform: uppercase; background: var(--accent-soft); color: var(--accent-ink); padding: 4px 8px; border-radius: 6px; align-self: flex-start; }
+  .badge.client { background: #fff1e3; color: #b25f10; }
+  .card h3 { font-size: 21px; margin: 12px 0 8px; }
+  .card p { color: var(--muted); margin: 0 0 16px; font-size: 15px; }
+  /* Datos que se despliegan al pasar el ratón */
+  .reveal-specs { display: grid; grid-template-rows: 0fr; transition: grid-template-rows .35s ease; }
+  .reveal-specs > div { overflow: hidden; }
+  .card:hover .reveal-specs, .card:focus-within .reveal-specs { grid-template-rows: 1fr; }
+  .specs { list-style: none; padding: 0; margin: 0 0 14px; display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
+  .specs li { background: var(--paper); border: 1px dashed var(--line); border-radius: 10px; padding: 8px 10px; }
+  .specs b { display: block; font: 700 17px var(--mono); color: var(--ink); }
+  .specs span { font-size: 12px; color: var(--muted); }
+  .chips { display: flex; flex-wrap: wrap; gap: 6px; margin-top: auto; }
+  .chip { font-size: 12px; border: 1px solid var(--line); border-radius: 999px; padding: 3px 10px; color: var(--ink-2); background: #fff; }
+  .detail { display: none; }
+
+  /* Ventana del proyecto */
+  dialog { border: 0; padding: 0; border-radius: 20px; width: min(1060px, calc(100vw - 32px)); max-height: calc(100vh - 32px); box-shadow: 0 40px 100px rgba(0,0,0,.4); }
+  dialog[open] { animation: pop .35s cubic-bezier(.2,.9,.3,1.2); }
+  @keyframes pop { from { opacity: 0; transform: translateY(20px) scale(.97); } to { opacity: 1; transform: none; } }
+  dialog::backdrop { background: rgba(8,18,30,.72); backdrop-filter: blur(4px); }
+  .dlg-bar { position: sticky; top: 0; z-index: 3; display: flex; justify-content: flex-end; gap: 8px; padding: 12px; pointer-events: none; height: 0; }
+  .dlg-bar button { pointer-events: auto; width: 40px; height: 40px; border-radius: 50%; border: 0; background: rgba(255,255,255,.95); box-shadow: var(--shadow); font-size: 18px; cursor: pointer; transition: transform .2s; }
+  .dlg-bar button:hover { transform: scale(1.08); }
+  .pd { display: grid; grid-template-columns: 1.15fr 1fr; }
+  .pd .gallery { background: #0b1828; padding: 20px; display: flex; flex-direction: column; gap: 12px; background-image: linear-gradient(rgba(140,200,255,.06) 1px, transparent 1px), linear-gradient(90deg, rgba(140,200,255,.06) 1px, transparent 1px); background-size: 24px 24px; }
+  @media (min-width: 901px) { .pd .gallery { position: sticky; top: 0; align-self: start; min-height: 100%; } }
+  .stage { position: relative; border-radius: 12px; overflow: hidden; background: #08121e; cursor: zoom-in; }
+  .stage.zoomed { cursor: zoom-out; }
+  .pd .g-main { width: 100%; aspect-ratio: 4 / 3; object-fit: contain; transition: transform .25s ease-out; transform-origin: var(--zx, 50%) var(--zy, 50%); }
+  .stage.zoomed .g-main { transform: scale(2); }
+  .pd .g-cap { color: #a9bccf; font-size: 13px; min-height: 20px; }
+  .pd .g-count { font: 500 12px var(--mono); color: var(--accent-2); }
+  .pd .thumbs { display: flex; gap: 8px; flex-wrap: wrap; }
+  .pd .thumbs button { width: 64px; height: 64px; padding: 0; border: 2px solid transparent; border-radius: 9px; overflow: hidden; cursor: pointer; background: #142235; opacity: .55; transition: .2s; }
+  .pd .thumbs button:hover { opacity: .9; }
+  .pd .thumbs button[aria-current="true"] { border-color: var(--accent-2); opacity: 1; }
+  .pd .thumbs img { width: 100%; height: 100%; object-fit: cover; }
+  .pd .info { padding: 34px 34px 38px; }
+  .pd .info h3 { font-size: 27px; margin: 10px 0 6px; }
+  .pd .meta { color: var(--muted); font-size: 14px; margin-bottom: 18px; }
+  .pd h4 { font-family: var(--mono); font-size: 12px; letter-spacing: .1em; text-transform: uppercase; color: var(--accent); margin: 20px 0 6px; }
+  .pd p, .pd li { color: var(--ink-2); font-size: 15px; }
+  .pd p { margin: 0; }
+  .pd ul { margin: 0; padding-left: 18px; }
+  .pd li { margin: 4px 0; }
+  .callout { background: var(--accent-soft); border-left: 3px solid var(--accent); border-radius: 8px; padding: 12px 14px; margin-top: 8px; }
+  .dlg-nav { display: flex; justify-content: space-between; gap: 10px; border-top: 1px solid var(--line); margin-top: 26px; padding-top: 16px; }
+  .dlg-nav button { background: none; border: 1px solid var(--line); border-radius: 10px; padding: 8px 12px; cursor: pointer; color: var(--ink-2); font-size: 14px; transition: .2s; }
+  .dlg-nav button:hover { border-color: var(--accent); color: var(--accent-ink); }
+
+  /* Experiencia: 4 pasos interactivos */
+  .exp { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); box-shadow: var(--shadow); padding: 32px; }
+  .exp-top { display: flex; justify-content: space-between; gap: 16px; flex-wrap: wrap; align-items: baseline; }
+  .exp-top h3 { font-size: 22px; }
+  .exp-top .when { color: var(--muted); font-size: 14px; font-family: var(--mono); }
+  .exp > p { color: var(--ink-2); margin: 10px 0 30px; }
+  .steps { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; counter-reset: s; position: relative; }
+  .steps::before, .steps::after { content: ""; position: absolute; left: 6%; right: 6%; top: 0; height: 2px; background: var(--line); }
+  .steps::after { background: var(--accent); transform-origin: 0 50%; transform: scaleX(var(--fill, 0)); transition: transform 1.4s cubic-bezier(.2,.8,.2,1); }
+  .step { position: relative; z-index: 1; background: var(--paper); border: 1px solid var(--line); border-radius: 14px; padding: 22px 16px 16px; margin-top: 14px; opacity: 0; translate: 0 12px; transition: opacity .5s, translate .5s, transform .25s, border-color .25s, background .25s; }
+  .step.in { opacity: 1; translate: 0 0; }
+  .step:hover { border-color: var(--accent); background: #fff; transform: translateY(-4px); }
+  .step::before { counter-increment: s; content: counter(s); position: absolute; top: -27px; left: 16px; width: 28px; height: 28px; border-radius: 50%; background: var(--accent); color: #fff; font: 700 13px/28px var(--mono); text-align: center; box-shadow: 0 0 0 4px #fff; }
+  .step .ico { font-size: 22px; line-height: 1; }
+  .step h4 { margin: 8px 0 6px; font-size: 15px; }
+  .step p { margin: 0; color: var(--muted); font-size: 14px; }
+  .step.result { background: var(--accent-soft); border-color: #bfe3f2; }
+
+  /* Habilidades: cada una enlaza a sus proyectos */
+  .skills { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; }
+  .skill { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 22px; transition: transform .25s, box-shadow .25s; }
+  .skill:hover { transform: translateY(-4px); box-shadow: var(--shadow); }
+  .skill h3 { font-size: 16px; margin-bottom: 12px; display: flex; align-items: center; gap: 8px; }
+  .skill ul { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: 15px; color: var(--ink-2); }
+  .skill a { color: var(--accent-ink); font-weight: 500; text-decoration: none; display: flex; justify-content: space-between; gap: 8px; border-radius: 8px; padding: 3px 6px; margin: 0 -6px; transition: background .2s, color .2s; }
+  .skill a::after { content: "→"; color: var(--accent); opacity: 0; transform: translateX(-4px); transition: .2s; }
+  .skill a:hover { background: var(--accent-soft); color: var(--accent-ink); }
+  .skill a:hover::after { opacity: 1; transform: none; }
+  .skills-hint { font-size: 14px; color: var(--muted); margin-top: 14px; }
+  .langs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 20px; }
+  .lang-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--radius); padding: 16px 20px; }
+  .lang-card .top { display: flex; justify-content: space-between; align-items: center; }
+  .lang-card b { font-size: 16px; }
+  .lang-card .lvl { font-family: var(--mono); font-size: 12px; color: var(--accent-ink); background: var(--accent-soft); padding: 3px 8px; border-radius: 6px; }
+  .meter { height: 6px; background: var(--paper); border-radius: 99px; margin-top: 12px; overflow: hidden; }
+  .meter i { display: block; height: 100%; width: 0; background: linear-gradient(90deg, var(--accent), var(--accent-2)); border-radius: 99px; transition: width 1.2s cubic-bezier(.2,.8,.2,1); }
+  .langs.in .meter i { width: var(--w); }
+
+  /* Contacto */
+  .contact { color: #fff; text-align: center; overflow: hidden; background: var(--navy); }
+  .contact .blueprint { animation: drift 30s linear infinite; }
+  @keyframes drift { to { background-position: 96px 96px, 96px 96px, 24px 24px, 24px 24px; } }
+  .contact .wrap { position: relative; }
+  .contact h2 { font-size: clamp(32px, 5.4vw, 52px); margin: 10px 0 12px; }
+  .contact p { color: #c4d1e0; margin: 0 auto 28px; max-width: 540px; }
+  .contact .cta { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; }
+  .copy-ok { display: inline-block; font: 500 13px var(--mono); color: var(--accent-2); margin-top: 14px; min-height: 20px; }
+  footer { background: var(--navy); color: #7f93aa; font-size: 13px; text-align: center; padding: 0 0 28px; position: relative; }
+  footer span { font-family: var(--mono); }
+
+  .reveal { opacity: 0; translate: 0 18px; transition: opacity .7s, translate .7s, transform .25s ease-out, box-shadow .25s; }
+  .reveal.in { opacity: 1; translate: 0 0; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .reveal, .step { opacity: 1; translate: 0 0; transition: none; }
+    html { scroll-behavior: auto; }
+    .contact .blueprint, .typer .caret { animation: none; }
+  }
+  @media (hover: none) {
+    .hero { cursor: auto; }
+    .reveal-specs { grid-template-rows: 1fr; }
+    .open-hint { opacity: 1; transform: none; }
+    .shot .lbl { opacity: 1; transform: none; }
+  }
+
+  /* Móvil */
+  @media (max-width: 900px) {
+    .hero .wrap, .about-grid, .pd { grid-template-columns: 1fr; }
+    .projects, .skills, .langs { grid-template-columns: 1fr 1fr; }
+    .steps { grid-template-columns: 1fr 1fr; row-gap: 30px; }
+    .steps::before, .steps::after { display: none; }
+    .nav-links { display: none; }
+    .lang { margin-left: auto; }
+    .titleblock, .dim-line { display: none; }
+  }
+  @media (max-width: 600px) {
+    .wrap { padding: 0 16px; }
+    .projects, .skills, .langs, .steps { grid-template-columns: 1fr; }
+    .collage { grid-template-rows: 130px 130px; }
+    section { padding: 64px 0; }
+    .exp, .pd .info { padding: 22px; }
+    .nav .btn { display: none; }
+    .hero .wrap { padding-top: 56px; padding-bottom: 64px; }
+  }
+
+  /* ===== Versión imprimible (PDF) ===== */
+  @page { size: A4; margin: 14mm 14mm 16mm; }
+  .print-contact, .print-links { display: none; }
+  @media print {
+    body { background: #fff; font-size: 10.5pt; }
+    .nav, .progress, .hero .cta, .typer, .xh, .spot, .blueprint-glow, .dim-line, .titleblock, .filters, dialog, .contact .cta, .copy-ok, .skills-hint, .shot .lbl, .shot .pin, footer { display: none !important; }
+    .reveal, .step, .card { opacity: 1 !important; translate: 0 0 !important; transform: none !important; }
+    * { box-shadow: none !important; -webkit-print-color-adjust: exact; print-color-adjust: exact; }
+    .wrap { max-width: none; padding: 0; }
+    section { padding: 0; background: none !important; }
+    .hero { border-radius: 12px; cursor: auto; }
+    .hero .wrap { grid-template-columns: 1.15fr .85fr; gap: 24px; padding: 26px 24px; }
+    .hero h1 { font-size: 34pt; margin-top: 6px; }
+    .hero h1 .hl { background: none; color: var(--accent-2); -webkit-text-fill-color: var(--accent-2); }
+    .hero p.lead { font-size: 11pt; margin: 10px 0 0; }
+    .collage { grid-template-rows: 110px 110px; }
+    .stats { margin-top: 16px; }
+    .print-contact { display: block !important; margin-top: 12px; color: #c4d1e0; font-size: 9.5pt; }
+    #about { padding-top: 18px; }
+    .section-head { margin-bottom: 12px; }
+    .section-head h2 { font-size: 18pt; }
+    .about-grid { gap: 20px; }
+    .about-grid p { font-size: 10.5pt; }
+    .facts { margin-top: 10px; }
+    #projects .section-head, .project > .card { display: none !important; }
+    .projects { display: block; }
+    .project { break-before: page; opacity: 1 !important; filter: none !important; transform: none !important; }
+    .detail { display: block !important; }
+    .pd { grid-template-columns: 1fr; }
+    .pd .gallery { background: none; padding: 0; }
+    .stage { background: #f1f3f6; }
+    .pd .g-main { aspect-ratio: auto; height: 88mm; object-fit: contain; }
+    .pd .g-cap, .pd .g-count, .dlg-nav { display: none; }
+    .pd .thumbs { display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px; }
+    .pd .thumbs button { width: 100%; height: 28mm; opacity: 1; border: 0; background: #f1f3f6; }
+    .pd .thumbs button:first-child { display: none; }
+    .pd .info { padding: 12px 0 0; }
+    .pd .info h3 { font-size: 20pt; margin-top: 4px; }
+    .pd h4 { break-after: avoid; margin-top: 12px; }
+    .pd ul, .callout { break-inside: avoid; }
+    .pd p, .pd li { font-size: 10pt; }
+    #experience { break-before: page; }
+    #experience .section-head, #skills .section-head { margin-bottom: 8px; }
+    .exp { padding: 20px; }
+    .exp > p { margin: 6px 0 22px; }
+    .steps { grid-template-columns: repeat(4, 1fr); }
+    .steps::before, .steps::after { display: none; }
+    .step .ico { display: none; }
+    #skills { padding-top: 22px; }
+    .skills { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .skill { padding: 14px; }
+    .skill ul { font-size: 9.5pt; gap: 2px; }
+    .skill a::after { display: none; }
+    .langs { grid-template-columns: repeat(4, 1fr); gap: 10px; }
+    .lang-card { padding: 10px 14px; }
+    .meter { display: none; }
+    .contact { background: var(--navy) !important; border-radius: 12px; margin-top: 16px; padding: 14px 20px; break-inside: avoid; }
+    .contact .blueprint { display: none; }
+    .contact h2 { font-size: 16pt; margin: 4px 0 6px; }
+    .contact p { margin-bottom: 6px; }
+    .print-links { display: block !important; color: #fff; font-size: 10pt; }
+  }
+</style>
+</head>
+<body>
+<div class="progress" aria-hidden="true"></div>
+
+<nav class="nav">
+  <div class="wrap">
+    <a class="brand" href="#top">
+      <svg class="gear" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M12 15.5a3.5 3.5 0 1 0 0-7 3.5 3.5 0 0 0 0 7Z"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1Z"/></svg>
+      MARYAN <span>KOVBA</span>
+    </a>
+    <div class="nav-links">
+      <a href="#projects"><span lang="en">Projects</span><span lang="es">Proyectos</span></a>
+      <a href="#experience"><span lang="en">Experience</span><span lang="es">Experiencia</span></a>
+      <a href="#skills"><span lang="en">Skills</span><span lang="es">Habilidades</span></a>
+      <a href="#contact"><span lang="en">Contact</span><span lang="es">Contacto</span></a>
+    </div>
+    <div class="lang" role="group" aria-label="Language">
+      <button type="button" data-set-lang="en" aria-pressed="true">EN</button>
+      <button type="button" data-set-lang="es" aria-pressed="false">ES</button>
+    </div>
+    <a class="btn btn-primary pdf-link" href="Maryan_Kovba_Portfolio_EN.pdf" download style="padding:8px 14px;font-size:14px">PDF ↓</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<header class="hero" id="top">
+  <div class="blueprint" aria-hidden="true"></div>
+  <div class="blueprint-glow" aria-hidden="true"></div>
+  <div class="spot" aria-hidden="true"></div>
+  <div class="xh xh-h" aria-hidden="true"></div>
+  <div class="xh xh-v" aria-hidden="true"></div>
+  <div class="xh xh-label" aria-hidden="true">X 000.0 · Y 000.0</div>
+  <div class="dim-line dim-a" aria-hidden="true">1 : 1 · ±0.1 mm</div>
+  <div class="titleblock" aria-hidden="true"><span>DRAWN</span><span>M. KOVBA</span><span>SHEET</span><span>01 / 05</span></div>
+
+  <div class="wrap">
+    <div>
+      <div class="eyebrow"><span lang="en">Portfolio · Mechanical Engineering</span><span lang="es">Portfolio · Ingeniería Mecánica</span></div>
+      <h1>Maryan <span class="hl">Kovba</span></h1>
+      <div class="role"><span lang="en">CAD Design &amp; Rapid Prototyping</span><span lang="es">Diseño CAD y prototipado rápido</span></div>
+      <div class="typer" aria-hidden="true">&gt; <span class="tw-pre"></span> <b class="tw-word"></b><span class="caret"></span></div>
+      <p class="lead">
+        <span lang="en">I design mechanical parts and assemblies in Fusion 360 and SolidWorks, prepare them for 3D printing, and take them all the way to a working prototype. Available for remote freelance work and internships.</span>
+        <span lang="es">Diseño piezas y conjuntos en Fusion 360 y SolidWorks, los preparo para impresión 3D y los llevo hasta un prototipo que funciona. Disponible para freelance en remoto y prácticas.</span>
+      </p>
+      <div class="cta">
+        <a class="btn btn-primary" href="#projects"><span lang="en">View projects</span><span lang="es">Ver proyectos</span> <span class="arr">→</span></a>
+        <a class="btn btn-ghost pdf-link" href="Maryan_Kovba_Portfolio_EN.pdf" download><span lang="en">Download PDF</span><span lang="es">Descargar PDF</span></a>
+        <a class="btn btn-ghost" href="#contact"><span lang="en">Contact me</span><span lang="es">Contactar</span></a>
+      </div>
+      <div class="print-contact">kovbamaryan@gmail.com · linkedin.com/in/maryan-kovba-ba6365419 · freelancer.com/u/MaryanVK</div>
+      <div class="stats">
+        <div class="stat"><b data-count="5" data-suffix="★">5★</b><span lang="en">client review</span><span lang="es">valoración cliente</span></div>
+        <div class="stat"><b data-count="3">3</b><span lang="en">built prototypes</span><span lang="es">prototipos construidos</span></div>
+        <div class="stat"><b data-count="4">4</b><span lang="en">languages</span><span lang="es">idiomas</span></div>
+      </div>
+    </div>
+    <div class="collage">
+      <button class="shot" type="button" data-open="p-hydro"><img src="img/hydro-tower.webp" alt="Hydroponic tower"><span class="pin">01</span><span class="lbl"><span lang="en">Hydroponic tower</span><span lang="es">Torre hidropónica</span><span>↗</span></span></button>
+      <button class="shot" type="button" data-open="p-panzer"><img src="img/panzer.jpg" alt="Panzer combat robot"><span class="pin">02</span><span class="lbl"><span>Panzer</span><span>↗</span></span></button>
+      <button class="shot" type="button" data-open="p-rov"><img src="img/rov.jpg" alt="Underwater ROV"><span class="pin">03</span><span class="lbl"><span lang="en">Underwater ROV</span><span lang="es">Submarino ROV</span><span>↗</span></span></button>
+    </div>
+  </div>
+</header>
+
+<!-- SOBRE MÍ -->
+<section id="about" class="paper">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow"><span lang="en">About me</span><span lang="es">Sobre mí</span></div>
+      <h2><span lang="en">From sketch to working prototype</span><span lang="es">Del boceto al prototipo que funciona</span></h2>
+    </div>
+    <div class="about-grid">
+      <div class="reveal">
+        <p lang="en">I am an Industrial Mechanical Engineering student at the University of Salamanca (Béjar campus, Spain), expected to graduate in 2028. I like building things that work in the real world: since 2025 I have been working as a freelance CAD designer for international clients, and I have built two robots with my university teams.</p>
+        <p lang="es">Soy estudiante de Ingeniería Industrial Mecánica en la Universidad de Salamanca (campus de Béjar), con graduación prevista en 2028. Me gusta construir cosas que funcionen de verdad: desde 2025 trabajo como diseñador CAD freelance para clientes internacionales y he construido dos robots con equipos de la universidad.</p>
+        <p lang="en">I am fast at turning an idea or a sketch into a printable, well-fitting part. When something does not work, I go back, find the problem and fix it — like the robot firmware I rewrote this summer, or the industrial printer I helped repair at a bottling plant.</p>
+        <p lang="es">Paso rápido de una idea o un boceto a una pieza imprimible que encaja bien. Cuando algo no funciona, vuelvo, encuentro el problema y lo arreglo: como el firmware del robot que reescribí este verano o la impresora industrial que ayudé a reparar en una embotelladora.</p>
+      </div>
+      <div class="facts reveal">
+        <dl>
+          <dt><span lang="en">Studies</span><span lang="es">Estudios</span></dt><dd><span lang="en">Industrial Mechanical Eng. · USAL</span><span lang="es">Ing. Industrial Mecánica · USAL</span></dd>
+          <dt><span lang="en">Based in</span><span lang="es">Ubicación</span></dt><dd>Béjar, Spain (CET)</dd>
+          <dt><span lang="en">Work mode</span><span lang="es">Modalidad</span></dt><dd><span lang="en">Remote · freelance or internship</span><span lang="es">Remoto · freelance o prácticas</span></dd>
+          <dt><span lang="en">Main tools</span><span lang="es">Herramientas</span></dt><dd>Fusion 360 · SolidWorks</dd>
+          <dt><span lang="en">Languages</span><span lang="es">Idiomas</span></dt><dd>ES · UK · EN · DE</dd>
+        </dl>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PROYECTOS -->
+<section id="projects" class="paper" style="padding-top:20px">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow"><span lang="en">Selected work</span><span lang="es">Proyectos</span></div>
+      <h2><span lang="en">Projects I have designed and built</span><span lang="es">Proyectos que he diseñado y construido</span></h2>
+      <p><span lang="en">Hover a card to see the CAD side. Click it for the full story. Filter by skill:</span><span lang="es">Pasa el ratón por una tarjeta para ver el lado CAD. Pulsa para ver la historia completa. Filtra por habilidad:</span></p>
+    </div>
+
+    <div class="filters" role="group" aria-label="Filter projects">
+      <button class="filter" type="button" data-filter="all" aria-pressed="true"><span lang="en">All</span><span lang="es">Todos</span> <span class="n">3</span></button>
+      <button class="filter" type="button" data-filter="cad">Fusion 360 <span class="n"></span></button>
+      <button class="filter" type="button" data-filter="print"><span lang="en">3D printing</span><span lang="es">Impresión 3D</span> <span class="n"></span></button>
+      <button class="filter" type="button" data-filter="client"><span lang="en">Client work</span><span lang="es">Para clientes</span> <span class="n"></span></button>
+      <button class="filter" type="button" data-filter="robotics"><span lang="en">Robotics</span><span lang="es">Robótica</span> <span class="n"></span></button>
+      <button class="filter" type="button" data-filter="code">ESP32 · C++ <span class="n"></span></button>
+    </div>
+
+    <div class="projects">
+
+      <!-- 1 · Torre hidropónica -->
+      <article class="project" id="p-hydro" data-tags="cad print client">
+        <div class="card reveal" tabindex="0" role="button" aria-label="Open project: Modular Hydroponic Tower">
+          <div class="thumb">
+            <img class="main" src="img/hydro-tower.webp" alt="3D-printed hydroponic tower" loading="lazy">
+            <img class="alt" src="img/hydro-module.webp" alt="" loading="lazy">
+            <div class="view-tag"><span class="v1"><span lang="en">PHOTO</span><span lang="es">FOTO</span></span><span class="v2">CAD</span></div>
+            <span class="open-hint"><span lang="en">Open project ↗</span><span lang="es">Ver proyecto ↗</span></span>
+          </div>
+          <div class="body">
+            <span class="badge client"><span lang="en">Freelance · Client</span><span lang="es">Freelance · Cliente</span></span>
+            <h3><span lang="en">Modular Hydroponic Tower</span><span lang="es">Torre hidropónica modular</span></h3>
+            <p><span lang="en">Printable parts for an Italian client.</span><span lang="es">Piezas imprimibles para un cliente italiano.</span></p>
+            <div class="reveal-specs"><div><ul class="specs">
+              <li><b>5★</b><span lang="en">client review</span><span lang="es">valoración</span></li>
+              <li><b>100%</b><span lang="en">on time</span><span lang="es">a tiempo</span></li>
+              <li><b>H2S</b><span lang="en">target printer</span><span lang="es">impresora destino</span></li>
+              <li><b>IT</b><span lang="en">client country</span><span lang="es">país del cliente</span></li>
+            </ul></div></div>
+            <div class="chips"><span class="chip">Fusion 360</span><span class="chip">Design for FDM</span><span class="chip">Bambu H2S</span></div>
+          </div>
+        </div>
+        <div class="detail">
+          <div class="pd">
+            <div class="gallery">
+              <div class="stage"><img class="g-main" src="img/hydro-tower.webp" alt=""></div>
+              <div class="g-count"></div>
+              <div class="g-cap"></div>
+              <div class="thumbs">
+                <button type="button" data-src="img/hydro-tower.webp" data-en="The assembled tower with the Wi-Fi watering controller" data-es="La torre montada con el controlador de riego WiFi"><img src="img/hydro-tower.webp" alt=""></button>
+                <button type="button" data-src="img/hydro-module.webp" data-en="Stackable module with four plant pots" data-es="Módulo apilable con cuatro macetas"><img src="img/hydro-module.webp" alt=""></button>
+                <button type="button" data-src="img/hydro-tube.webp" data-en="Section with the controller mount" data-es="Tramo con el soporte del controlador"><img src="img/hydro-tube.webp" alt=""></button>
+                <button type="button" data-src="img/hydro-tank.webp" data-en="Cross-section of the conical tank" data-es="Sección del depósito cónico"><img src="img/hydro-tank.webp" alt=""></button>
+                <button type="button" data-src="img/hydro-tube2.webp" data-en="Plain tube section with locking tabs" data-es="Tramo liso con pestañas de encaje"><img src="img/hydro-tube2.webp" alt=""></button>
+              </div>
+            </div>
+            <div class="info">
+              <div class="head">
+                <span class="badge client"><span lang="en">Freelance · Client project</span><span lang="es">Freelance · Proyecto de cliente</span></span>
+                <h3><span lang="en">Modular Hydroponic Tower</span><span lang="es">Torre hidropónica modular</span></h3>
+                <div class="meta">Hydroinvent Group (Italy) · Freelancer.com · 2025–2026</div>
+              </div>
+              <h4><span lang="en">Challenge</span><span lang="es">El reto</span></h4>
+              <p lang="en">The client needed the main parts of a vertical hydroponic tower: large, watertight components that had to print reliably on their Bambu Lab H2S printer.</p>
+              <p lang="es">El cliente necesitaba las piezas principales de una torre hidropónica vertical: piezas grandes y estancas que imprimieran bien en su impresora Bambu Lab H2S.</p>
+              <h4><span lang="en">What I did</span><span lang="es">Qué hice</span></h4>
+              <ul lang="en">
+                <li>Designed stackable modules with four angled plant pots and a fit between levels.</li>
+                <li>Designed a conical water tank with a bamboo texture for the base.</li>
+                <li>Added a mount for the Wi-Fi watering controller and a spacer for the irrigation pump.</li>
+                <li>Optimised every part for FDM: orientation, supports, tolerances and splitting large parts into printable pieces.</li>
+              </ul>
+              <ul lang="es">
+                <li>Módulos apilables con cuatro macetas inclinadas y encaje entre niveles.</li>
+                <li>Depósito cónico con textura de bambú para la base.</li>
+                <li>Soporte para el controlador de riego WiFi y espaciador para la bomba de irrigación.</li>
+                <li>Optimización de cada pieza para FDM: orientación, soportes, tolerancias y división en piezas imprimibles.</li>
+              </ul>
+              <h4><span lang="en">Result</span><span lang="es">Resultado</span></h4>
+              <p class="callout" lang="en">The tower was printed and assembled. The client gave a <strong>5-star review</strong> — delivered on time and on budget.</p>
+              <p class="callout" lang="es">La torre se imprimió y se montó. El cliente dio una <strong>valoración de 5 estrellas</strong>: entregado a tiempo y dentro de presupuesto.</p>
+              <h4><span lang="en">Tools</span><span lang="es">Herramientas</span></h4>
+              <p>Fusion 360 · Bambu Studio · STL / 3MF</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 2 · Panzer -->
+      <article class="project" id="p-panzer" data-tags="cad print robotics code">
+        <div class="card reveal" tabindex="0" role="button" aria-label="Open project: Panzer combat robot">
+          <div class="thumb">
+            <img class="main" src="img/panzer.jpg" alt="Panzer combat robot" loading="lazy">
+            <img class="alt" src="img/panzer-cad.jpg" alt="" loading="lazy" style="object-fit:cover;padding:0;object-position:68% 50%">
+            <div class="view-tag"><span class="v1"><span lang="en">PHOTO</span><span lang="es">FOTO</span></span><span class="v2">CAD</span></div>
+            <span class="open-hint"><span lang="en">Open project ↗</span><span lang="es">Ver proyecto ↗</span></span>
+          </div>
+          <div class="body">
+            <span class="badge"><span lang="en">University team · Robotics</span><span lang="es">Equipo universidad · Robótica</span></span>
+            <h3><span lang="en">Panzer · Combat Robot</span><span lang="es">Panzer · Robot de combate</span></h3>
+            <p><span lang="en">Saw-blade combat robot. I led the mechanical design and rewrote the firmware.</span><span lang="es">Robot de combate con sierra. Lideré el diseño mecánico y reescribí el firmware.</span></p>
+            <div class="reveal-specs"><div><ul class="specs">
+              <li><b>25+</b><span lang="en">CAD parts</span><span lang="es">piezas CAD</span></li>
+              <li><b>1W · 1D</b><span lang="en">win · draw</span><span lang="es">victoria · empate</span></li>
+              <li><b>RS550</b><span lang="en">weapon motor</span><span lang="es">motor del arma</span></li>
+              <li><b>v2</b><span lang="en">firmware works</span><span lang="es">firmware OK</span></li>
+            </ul></div></div>
+            <div class="chips"><span class="chip">Fusion 360</span><span class="chip">ESP32 · C++</span><span class="chip">Laser cutting</span></div>
+          </div>
+        </div>
+        <div class="detail">
+          <div class="pd">
+            <div class="gallery">
+              <div class="stage"><img class="g-main" src="img/panzer.jpg" alt=""></div>
+              <div class="g-count"></div>
+              <div class="g-cap"></div>
+              <div class="thumbs">
+                <button type="button" data-src="img/panzer.jpg" data-en="Finished robot with the saw-blade weapon" data-es="Robot terminado con el arma de sierra"><img src="img/panzer.jpg" alt=""></button>
+                <button type="button" data-src="img/panzer-cad.jpg" data-en="Full assembly in Fusion 360 (25+ parts)" data-es="Ensamblaje completo en Fusion 360 (más de 25 piezas)"><img src="img/panzer-cad.jpg" alt=""></button>
+                <button type="button" data-src="img/panzer-inside.jpg" data-en="Inside: drive motors, battery and electronics" data-es="Interior: motores, batería y electrónica"><img src="img/panzer-inside.jpg" alt=""></button>
+                <button type="button" data-src="img/panzer-workshop.jpg" data-en="Assembly in the university workshop" data-es="Montaje en el taller de la universidad"><img src="img/panzer-workshop.jpg" alt=""></button>
+              </div>
+            </div>
+            <div class="info">
+              <div class="head">
+                <span class="badge"><span lang="en">University team project</span><span lang="es">Proyecto en equipo · Universidad</span></span>
+                <h3><span lang="en">Panzer · Combat Robot</span><span lang="es">Panzer · Robot de combate</span></h3>
+                <div class="meta"><span lang="en">2026 · My role: mechanical design lead (Fusion 360) + firmware rework</span><span lang="es">2026 · Mi papel: responsable del diseño mecánico (Fusion 360) y reescritura del firmware</span></div>
+              </div>
+              <h4><span lang="en">Challenge</span><span lang="es">El reto</span></h4>
+              <p lang="en">Build a combat robot with a spinning saw-blade weapon for a university competition. It had to fit inside a maximum size, survive impacts and be easy to repair between fights.</p>
+              <p lang="es">Construir un robot de combate con un arma de sierra giratoria para una competición de la universidad. Tenía que caber en un tamaño máximo, aguantar impactos y repararse rápido entre combates.</p>
+              <h4><span lang="en">What I did</span><span lang="es">Qué hice</span></h4>
+              <ul lang="en">
+                <li>Designed the full robot in Fusion 360: more than 25 parts, all inside the size limit.</li>
+                <li>Weapon: saw blade driven by an RS550 motor through a belt, with a custom shaft and supports.</li>
+                <li>Drive: four geared motors with 3D-printed mounts, and flexible side walls to absorb hits.</li>
+                <li>Chassis: laser-cut MDF combined with bolted 3D-printed parts.</li>
+              </ul>
+              <ul lang="es">
+                <li>Diseñé el robot completo en Fusion 360: más de 25 piezas, todas dentro del tamaño límite.</li>
+                <li>Arma: sierra movida por un motor RS550 mediante correa, con eje y soportes a medida.</li>
+                <li>Tracción: cuatro motorreductores con soportes impresos y laterales flexibles para absorber golpes.</li>
+                <li>Chasis: DM cortado por láser combinado con piezas impresas atornilladas.</li>
+              </ul>
+              <h4><span lang="en">Result</span><span lang="es">Resultado</span></h4>
+              <p lang="en">In the competition we <strong>won one fight and drew the other</strong>. A firmware bug and an electrical fault stopped the weapon from working properly.</p>
+              <p lang="es">En la competición <strong>ganamos un combate y empatamos el otro</strong>. Un fallo del firmware y otro eléctrico impidieron que el arma funcionara bien.</p>
+              <h4><span lang="en">What I learned — and fixed</span><span lang="es">Qué aprendí y qué arreglé</span></h4>
+              <p class="callout" lang="en">Over the summer I rewrote the firmware myself (ESP32, PS4 controller over Bluetooth, modular C++). <strong>It now works reliably.</strong> Next step: a <strong>custom PCB</strong> to replace the loose wiring and save space.</p>
+              <p class="callout" lang="es">En verano reescribí el firmware yo mismo (ESP32, mando de PS4 por Bluetooth, C++ modular). <strong>Ahora funciona de forma fiable.</strong> Siguiente paso: una <strong>PCB propia</strong> para sustituir el cableado suelto y ganar espacio.</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+      <!-- 3 · ROV -->
+      <article class="project" id="p-rov" data-tags="cad print robotics code">
+        <div class="card reveal" tabindex="0" role="button" aria-label="Open project: Underwater ROV">
+          <div class="thumb">
+            <img class="main" src="img/rov.jpg" alt="Underwater ROV" loading="lazy">
+            <img class="alt" src="img/rov-clamps.jpg" alt="" loading="lazy" style="object-fit:cover;padding:0">
+            <div class="view-tag"><span class="v1"><span lang="en">FULL</span><span lang="es">COMPLETO</span></span><span class="v2"><span lang="en">DETAIL</span><span lang="es">DETALLE</span></span></div>
+            <span class="open-hint"><span lang="en">Open project ↗</span><span lang="es">Ver proyecto ↗</span></span>
+          </div>
+          <div class="body">
+            <span class="badge"><span lang="en">University team · Robotics</span><span lang="es">Equipo universidad · Robótica</span></span>
+            <h3><span lang="en">Underwater ROV</span><span lang="es">Submarino ROV</span></h3>
+            <p><span lang="en">Three-axis underwater vehicle. I designed the parts and wrote the motor control.</span><span lang="es">Vehículo submarino de tres ejes. Diseñé las piezas y programé el control de motores.</span></p>
+            <div class="reveal-specs"><div><ul class="specs">
+              <li><b>&lt;€500</b><span lang="en">total budget</span><span lang="es">presupuesto total</span></li>
+              <li><b>4</b><span lang="en">thrusters</span><span lang="es">propulsores</span></li>
+              <li><b>3</b><span lang="en">axes of motion</span><span lang="es">ejes de movimiento</span></li>
+              <li><b>3 s</b><span lang="en">safety stop</span><span lang="es">parada de seguridad</span></li>
+            </ul></div></div>
+            <div class="chips"><span class="chip">Fusion 360</span><span class="chip">3D printing</span><span class="chip">ESP32 · PWM</span></div>
+          </div>
+        </div>
+        <div class="detail">
+          <div class="pd">
+            <div class="gallery">
+              <div class="stage"><img class="g-main" src="img/rov.jpg" alt=""></div>
+              <div class="g-count"></div>
+              <div class="g-cap"></div>
+              <div class="thumbs">
+                <button type="button" data-src="img/rov.jpg" data-en="The ROV with thrusters, camera and LED light" data-es="El ROV con propulsores, cámara y foco LED"><img src="img/rov.jpg" alt=""></button>
+                <button type="button" data-src="img/rov-clamps.jpg" data-en="3D-printed clamps I designed for the PVC frame" data-es="Abrazaderas impresas que diseñé para la estructura de PVC"><img src="img/rov-clamps.jpg" alt=""></button>
+              </div>
+            </div>
+            <div class="info">
+              <div class="head">
+                <span class="badge"><span lang="en">University team project</span><span lang="es">Proyecto en equipo · Universidad</span></span>
+                <h3><span lang="en">Underwater ROV</span><span lang="es">Submarino ROV</span></h3>
+                <div class="meta"><span lang="en">2026 · My role: mechanical design (Fusion 360) + motor-control firmware · Budget: under €500</span><span lang="es">2026 · Mi papel: diseño mecánico (Fusion 360) y firmware de control de motores · Presupuesto: menos de 500 €</span></div>
+              </div>
+              <h4><span lang="en">Challenge</span><span lang="es">El reto</span></h4>
+              <p lang="en">Build a remotely operated underwater vehicle that can move in three axes and record video — on a student budget of under €500, a fraction of the price of a commercial ROV.</p>
+              <p lang="es">Construir un vehículo submarino teledirigido que se mueva en tres ejes y grabe vídeo, con un presupuesto de estudiante de menos de 500 €, una fracción de lo que cuesta uno comercial.</p>
+              <h4><span lang="en">What I did</span><span lang="es">Qué hice</span></h4>
+              <ul lang="en">
+                <li>PVC pipe frame joined with clamps and brackets that I designed and 3D-printed.</li>
+                <li>Four thrusters: two vertical (up/down) and two horizontal (forward and turning).</li>
+                <li>Wrote the motor-control firmware: ESP32 with H-bridge drivers and PWM speed control.</li>
+                <li>Safety stop: all motors stop if the signal is lost for 3 seconds.</li>
+                <li>Action camera and LED light mounted on the frame.</li>
+              </ul>
+              <ul lang="es">
+                <li>Estructura de tubo de PVC unida con abrazaderas y soportes que diseñé e imprimí.</li>
+                <li>Cuatro propulsores: dos verticales (subir/bajar) y dos horizontales (avanzar y girar).</li>
+                <li>Programé el firmware de los motores: ESP32 con puentes en H y control de velocidad PWM.</li>
+                <li>Parada de seguridad: los motores se detienen si se pierde la señal durante 3 segundos.</li>
+                <li>Cámara de acción y foco LED montados en la estructura.</li>
+              </ul>
+              <h4><span lang="en">Tools</span><span lang="es">Herramientas</span></h4>
+              <p>Fusion 360 · FDM printing · ESP32 / Arduino C++</p>
+            </div>
+          </div>
+        </div>
+      </article>
+
+    </div>
+  </div>
+</section>
+
+<!-- EXPERIENCIA INDUSTRIAL -->
+<section id="experience" class="paper-alt">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow"><span lang="en">Industrial experience</span><span lang="es">Experiencia industrial</span></div>
+      <h2><span lang="en">Fixing a production line</span><span lang="es">Arreglando una línea de producción</span></h2>
+    </div>
+    <div class="exp reveal">
+      <div class="exp-top">
+        <h3><span lang="en">Warehouse Operator · Soft-drink bottling plant</span><span lang="es">Mozo de almacén · Embotelladora de refrescos</span></h3>
+        <span class="when"><span lang="en">Summer 2026 · Spain</span><span lang="es">Verano 2026 · España</span></span>
+      </div>
+      <p lang="en">Warehouse and forklift operation in a working production plant. When the date-coding printer on the filling line failed, I helped repair it:</p>
+      <p lang="es">Almacén y carretilla elevadora en una planta de producción. Cuando falló la codificadora de fechas de la línea de llenado, ayudé a repararla:</p>
+      <div class="steps">
+        <div class="step"><div class="ico">⚠️</div><h4><span lang="en">Problem</span><span lang="es">Problema</span></h4><p lang="en">The Hitachi RX-S inkjet coder stopped printing expiry dates. Cleaning the nozzle did not fix it.</p><p lang="es">La codificadora Hitachi RX-S dejó de imprimir las fechas. Limpiar la boquilla no bastó.</p></div>
+        <div class="step"><div class="ico">📖</div><h4><span lang="en">Diagnosis</span><span lang="es">Diagnóstico</span></h4><p lang="en">I read the English service manual and found the cause: a clogged filter plate inside the print head.</p><p lang="es">Leí el manual técnico en inglés y encontré la causa: una placa filtro obstruida en el cabezal.</p></div>
+        <div class="step"><div class="ico">🔧</div><h4><span lang="en">Fix</span><span lang="es">Reparación</span></h4><p lang="en">With my supervisor we disassembled the unit, cleaned the filter and reassembled it.</p><p lang="es">Con mi jefe desmontamos el equipo, limpiamos el filtro y lo volvimos a montar.</p></div>
+        <div class="step result"><div class="ico">✅</div><h4><span lang="en">Result</span><span lang="es">Resultado</span></h4><p lang="en">The filling line restarted the same day, with no external technician call-out.</p><p lang="es">La línea volvió a funcionar el mismo día, sin llamar al técnico externo.</p></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- HABILIDADES -->
+<section id="skills" class="paper">
+  <div class="wrap">
+    <div class="section-head reveal">
+      <div class="eyebrow"><span lang="en">Skills</span><span lang="es">Habilidades</span></div>
+      <h2><span lang="en">What I work with</span><span lang="es">Con qué trabajo</span></h2>
+    </div>
+    <div class="skills">
+      <div class="skill reveal"><h3>📐 <span lang="en">CAD &amp; design</span><span lang="es">CAD y diseño</span></h3>
+        <ul><li><a href="#projects" data-goto="cad">Fusion 360</a></li><li>SolidWorks</li><li>AutoCAD</li><li>Revit</li></ul></div>
+      <div class="skill reveal"><h3>🖨️ <span lang="en">Manufacturing</span><span lang="es">Fabricación</span></h3>
+        <ul><li><a href="#projects" data-goto="print"><span lang="en">FDM 3D printing</span><span lang="es">Impresión 3D FDM</span></a></li><li lang="en">Tolerances and fits</li><li lang="es">Tolerancias y ajustes</li><li><a href="#p-panzer" data-goto-project="p-panzer"><span lang="en">Laser cutting</span><span lang="es">Corte láser</span></a></li><li>STL · STEP · 3MF</li></ul></div>
+      <div class="skill reveal"><h3>⚡ <span lang="en">Electronics &amp; code</span><span lang="es">Electrónica y código</span></h3>
+        <ul><li><a href="#projects" data-goto="code">ESP32 / Arduino (C++)</a></li><li><a href="#p-rov" data-goto-project="p-rov"><span lang="en">Motor control (PWM)</span><span lang="es">Control de motores (PWM)</span></a></li><li lang="en">PCB design (learning)</li><li lang="es">Diseño de PCB (aprendiendo)</li></ul></div>
+      <div class="skill reveal"><h3>📊 <span lang="en">Analysis</span><span lang="es">Análisis</span></h3>
+        <ul><li>MATLAB &amp; Simulink</li><li lang="en">MathWorks Onramp certificate</li><li lang="es">Certificado MathWorks Onramp</li></ul></div>
+    </div>
+    <p class="skills-hint"><span lang="en">Tip: skills with an arrow take you to the projects where I used them.</span><span lang="es">Truco: las habilidades con flecha te llevan a los proyectos donde las usé.</span></p>
+    <div class="langs">
+      <div class="lang-card reveal"><div class="top"><b><span lang="en">Spanish</span><span lang="es">Español</span></b><span class="lvl"><span lang="en">Native</span><span lang="es">Nativo</span></span></div><div class="meter"><i style="--w:100%"></i></div></div>
+      <div class="lang-card reveal"><div class="top"><b><span lang="en">Ukrainian</span><span lang="es">Ucraniano</span></b><span class="lvl"><span lang="en">Native</span><span lang="es">Nativo</span></span></div><div class="meter"><i style="--w:100%"></i></div></div>
+      <div class="lang-card reveal"><div class="top"><b><span lang="en">English</span><span lang="es">Inglés</span></b><span class="lvl">B1</span></div><div class="meter"><i style="--w:55%"></i></div></div>
+      <div class="lang-card reveal"><div class="top"><b><span lang="en">German</span><span lang="es">Alemán</span></b><span class="lvl"><span lang="en">A1 · learning</span><span lang="es">A1 · aprendiendo</span></span></div><div class="meter"><i style="--w:18%"></i></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- CONTACTO -->
+<section class="contact" id="contact">
+  <div class="blueprint" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="eyebrow"><span lang="en">Contact</span><span lang="es">Contacto</span></div>
+    <h2><span lang="en">Let's build something.</span><span lang="es">Construyamos algo.</span></h2>
+    <p><span lang="en">Open to remote freelance projects and engineering internships.</span><span lang="es">Disponible para proyectos freelance en remoto y prácticas de ingeniería.</span></p>
+    <div class="cta">
+      <button class="btn btn-primary" type="button" id="copy-mail">✉ kovbamaryan@gmail.com</button>
+      <a class="btn btn-ghost" href="https://www.linkedin.com/in/maryan-kovba-ba6365419/" target="_blank" rel="noopener">LinkedIn ↗</a>
+      <a class="btn btn-ghost" href="https://www.freelancer.com/u/MaryanVK" target="_blank" rel="noopener">Freelancer.com ↗</a>
+    </div>
+    <div class="copy-ok" aria-live="polite"></div>
+    <div class="print-links">kovbamaryan@gmail.com · linkedin.com/in/maryan-kovba-ba6365419 · freelancer.com/u/MaryanVK</div>
+  </div>
+</section>
+<footer><div class="wrap"><span lang="en">Designed &amp; built by Maryan Kovba — no templates</span><span lang="es">Diseñada y hecha por Maryan Kovba, sin plantillas</span> · <span>© 2026</span></div></footer>
+
+<dialog id="dlg" aria-label="Project">
+  <div class="dlg-bar"><button class="dlg-close" type="button" aria-label="Close">✕</button></div>
+  <div id="dlg-body"></div>
+</dialog>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var finePointer = window.matchMedia('(hover: hover) and (pointer: fine)').matches;
+  function lang() { return root.classList.contains('l-es') ? 'es' : 'en'; }
+
+  // ---------- Idioma ----------
+  var typerRestart = function () {};
+  function setLang(l) {
+    root.classList.remove('l-en', 'l-es'); root.classList.add('l-' + l); root.lang = l;
+    document.querySelectorAll('[data-set-lang]').forEach(function (b) { b.setAttribute('aria-pressed', String(b.dataset.setLang === l)); });
+    document.querySelectorAll('.pdf-link').forEach(function (a) { a.href = 'Maryan_Kovba_Portfolio_' + l.toUpperCase() + '.pdf'; });
+    document.querySelectorAll('.gallery').forEach(function (g) { var cur = g.querySelector('[aria-current="true"]'), cap = g.querySelector('.g-cap'); if (cur && cap) cap.textContent = cur.dataset[l]; });
+    try { localStorage.setItem('lang', l); } catch (e) {}
+    typerRestart();
+  }
+  var start = new URLSearchParams(location.search).get('lang');
+  if (!start) { try { start = localStorage.getItem('lang'); } catch (e) {} }
+  if (!start) start = (navigator.language || 'en').slice(0, 2) === 'es' ? 'es' : 'en';
+  document.querySelectorAll('[data-set-lang]').forEach(function (b) { b.addEventListener('click', function () { setLang(b.dataset.setLang); }); });
+
+  // ---------- Texto que se escribe solo ----------
+  var words = { en: { pre: 'I', list: ['design parts.', 'print prototypes.', 'build robots.', 'fix machines.'] },
+                es: { pre: 'Yo', list: ['diseño piezas.', 'imprimo prototipos.', 'construyo robots.', 'arreglo máquinas.'] } };
+  var twPre = document.querySelector('.tw-pre'), twWord = document.querySelector('.tw-word'), twTimer = null;
+  typerRestart = function () {
+    clearTimeout(twTimer);
+    var w = words[lang()]; twPre.textContent = w.pre;
+    if (reduce) { twWord.textContent = w.list[0]; return; }
+    var i = 0, n = 0, del = false;
+    (function tick() {
+      var word = w.list[i];
+      n += del ? -1 : 1; twWord.textContent = word.slice(0, n);
+      var wait = del ? 35 : 75;
+      if (!del && n === word.length) { del = true; wait = 1600; }
+      else if (del && n === 0) { del = false; i = (i + 1) % w.list.length; wait = 300; }
+      twTimer = setTimeout(tick, wait);
+    })();
+  };
+  setLang(start === 'es' ? 'es' : 'en');
+
+  // ---------- Hero: cuadrícula que sigue al ratón ----------
+  // Los efectos que siguen al ratón responden a la mano del usuario, así que se mantienen aunque pida menos movimiento
+  var hero = document.querySelector('.hero'), label = document.querySelector('.xh-label');
+  if (finePointer) {
+    hero.addEventListener('mousemove', function (e) {
+      var r = hero.getBoundingClientRect(), x = e.clientX - r.left, y = e.clientY - r.top;
+      hero.style.setProperty('--mx', x + 'px'); hero.style.setProperty('--my', y + 'px');
+      label.textContent = 'X ' + (x / 3.78).toFixed(1) + ' · Y ' + (y / 3.78).toFixed(1) + ' mm';
+      hero.classList.add('hovering');
+    });
+    hero.addEventListener('mouseleave', function () { hero.classList.remove('hovering'); });
+  }
+
+  // ---------- Barra de progreso + engranaje + enlace activo ----------
+  var bar = document.querySelector('.progress'), gear = document.querySelector('.gear');
+  var navLinks = document.querySelectorAll('.nav-links a');
+  function onScroll() {
+    var h = document.documentElement.scrollHeight - innerHeight, p = h > 0 ? scrollY / h : 0;
+    bar.style.transform = 'scaleX(' + p + ')';
+    gear.style.transform = 'rotate(' + (scrollY * 0.4) + 'deg)';
+    var cur = null;
+    document.querySelectorAll('section[id]').forEach(function (s) { if (s.getBoundingClientRect().top < innerHeight * 0.4) cur = s.id; });
+    navLinks.forEach(function (a) { a.classList.toggle('active', a.getAttribute('href') === '#' + cur); });
+  }
+  addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  // ---------- Galería (con zoom al pulsar la foto) ----------
+  function wireGallery(scope) {
+    var main = scope.querySelector('.g-main'), cap = scope.querySelector('.g-cap'), count = scope.querySelector('.g-count'),
+        stage = scope.querySelector('.stage'), thumbs = scope.querySelectorAll('.thumbs button');
+    function show(i) {
+      thumbs.forEach(function (t, j) { t.setAttribute('aria-current', String(i === j)); });
+      main.src = thumbs[i].dataset.src; cap.textContent = thumbs[i].dataset[lang()];
+      count.textContent = String(i + 1).padStart(2, '0') + ' / ' + String(thumbs.length).padStart(2, '0');
+      stage.classList.remove('zoomed');
+    }
+    thumbs.forEach(function (t, i) { t.addEventListener('click', function () { show(i); }); });
+    stage.addEventListener('click', function () { stage.classList.toggle('zoomed'); });
+    stage.addEventListener('mousemove', function (e) {
+      var r = stage.getBoundingClientRect();
+      main.style.setProperty('--zx', ((e.clientX - r.left) / r.width * 100) + '%');
+      main.style.setProperty('--zy', ((e.clientY - r.top) / r.height * 100) + '%');
+    });
+    show(0);
+    return function (step) { var cur = 0; thumbs.forEach(function (t, j) { if (t.getAttribute('aria-current') === 'true') cur = j; }); show((cur + step + thumbs.length) % thumbs.length); };
+  }
+  document.querySelectorAll('.detail .gallery').forEach(wireGallery);
+
+  // ---------- Ventana de proyecto ----------
+  var projects = Array.prototype.slice.call(document.querySelectorAll('.project'));
+  var dlg = document.getElementById('dlg'), body = document.getElementById('dlg-body'), move = null, openIdx = 0;
+  function openProject(idx) {
+    openIdx = (idx + projects.length) % projects.length;
+    var p = projects[openIdx];
+    body.innerHTML = p.querySelector('.detail').innerHTML +
+      '<div class="pd" style="display:block;padding:0 34px 26px"><div class="dlg-nav">' +
+      '<button type="button" data-step="-1">← <span lang="en">Previous</span><span lang="es">Anterior</span></button>' +
+      '<button type="button" data-step="1"><span lang="en">Next project</span><span lang="es">Siguiente proyecto</span> →</button></div></div>';
+    move = wireGallery(body.querySelector('.gallery'));
+    body.querySelectorAll('[data-step]').forEach(function (b) { b.addEventListener('click', function () { openProject(openIdx + Number(b.dataset.step)); }); });
+    if (!dlg.open) { if (dlg.showModal) dlg.showModal(); else dlg.setAttribute('open', ''); }
+    dlg.scrollTop = 0;
+    history.replaceState(null, '', '#' + p.id);
+  }
+  function closeDlg() { dlg.close(); }
+  dlg.addEventListener('close', function () { history.replaceState(null, '', location.pathname + location.search); });
+  projects.forEach(function (p, i) {
+    var card = p.querySelector('.card');
+    card.addEventListener('click', function () { openProject(i); });
+    card.addEventListener('keydown', function (e) { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); openProject(i); } });
+  });
+  document.querySelectorAll('[data-open]').forEach(function (b) {
+    b.addEventListener('click', function () { openProject(projects.indexOf(document.getElementById(b.dataset.open))); });
+  });
+  dlg.querySelector('.dlg-close').addEventListener('click', closeDlg);
+  dlg.addEventListener('click', function (e) { if (e.target === dlg) closeDlg(); });
+  document.addEventListener('keydown', function (e) {
+    if (!dlg.open || !move) return;
+    if (e.key === 'ArrowRight') move(1);
+    if (e.key === 'ArrowLeft') move(-1);
+  });
+  if (location.hash && /^#p-/.test(location.hash)) { var pi = projects.indexOf(document.querySelector(location.hash)); if (pi >= 0) setTimeout(function () { openProject(pi); }, 300); }
+
+  // ---------- Tarjetas que se inclinan con el ratón ----------
+  if (finePointer) {
+    document.querySelectorAll('.card').forEach(function (c) {
+      c.addEventListener('mousemove', function (e) {
+        var r = c.getBoundingClientRect(), x = (e.clientX - r.left) / r.width, y = (e.clientY - r.top) / r.height;
+        c.style.setProperty('--ry', ((x - .5) * 10) + 'deg'); c.style.setProperty('--rx', ((.5 - y) * 8) + 'deg');
+        c.style.setProperty('--gx', (x * 100) + '%'); c.style.setProperty('--gy', (y * 100) + '%');
+      });
+      c.addEventListener('mouseleave', function () { c.style.setProperty('--rx', '0deg'); c.style.setProperty('--ry', '0deg'); });
+    });
+  }
+
+  // ---------- Filtros por habilidad ----------
+  var filters = document.querySelectorAll('.filter');
+  filters.forEach(function (f) {
+    var k = f.dataset.filter, n = f.querySelector('.n');
+    if (k !== 'all') n.textContent = projects.filter(function (p) { return p.dataset.tags.split(' ').indexOf(k) >= 0; }).length;
+    f.addEventListener('click', function () { setFilter(k); });
+  });
+  function setFilter(k) {
+    filters.forEach(function (f) { f.setAttribute('aria-pressed', String(f.dataset.filter === k)); });
+    projects.forEach(function (p) { p.classList.toggle('dim', k !== 'all' && p.dataset.tags.split(' ').indexOf(k) < 0); });
+  }
+  function flash(p) { p.classList.remove('flash'); void p.offsetWidth; p.classList.add('flash'); }
+  document.querySelectorAll('[data-goto]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault(); setFilter(a.dataset.goto);
+      document.getElementById('projects').scrollIntoView({ behavior: reduce ? 'auto' : 'smooth' });
+      projects.forEach(function (p) { if (!p.classList.contains('dim')) flash(p); });
+    });
+  });
+  document.querySelectorAll('[data-goto-project]').forEach(function (a) {
+    a.addEventListener('click', function (e) {
+      e.preventDefault(); setFilter('all');
+      var p = document.getElementById(a.dataset.gotoProject);
+      p.scrollIntoView({ behavior: reduce ? 'auto' : 'smooth', block: 'center' }); flash(p);
+    });
+  });
+
+  // ---------- Copiar email ----------
+  var copyBtn = document.getElementById('copy-mail'), copyOk = document.querySelector('.copy-ok');
+  copyBtn.addEventListener('click', function () {
+    var mail = 'kovbamaryan@gmail.com';
+    var done = function () { copyOk.textContent = lang() === 'es' ? '✓ Email copiado. ¡Escríbeme!' : '✓ Email copied. Say hi!'; setTimeout(function () { copyOk.textContent = ''; }, 2600); };
+    if (navigator.clipboard && navigator.clipboard.writeText) navigator.clipboard.writeText(mail).then(done, function () { location.href = 'mailto:' + mail; });
+    else location.href = 'mailto:' + mail;
+  });
+
+  // ---------- Animaciones al aparecer ----------
+  function countUp(el) {
+    var target = Number(el.dataset.count), suffix = el.dataset.suffix || '', t0 = null;
+    if (reduce) return;
+    (function step(ts) { if (!t0) t0 = ts; var k = Math.min(1, (ts - t0) / 900); el.textContent = Math.round(target * k) + suffix; if (k < 1) requestAnimationFrame(step); })(performance.now());
+  }
+  var els = document.querySelectorAll('.reveal, .step, .stat b, .langs, .steps');
+  if ('IntersectionObserver' in window && !reduce) {
+    var io = new IntersectionObserver(function (entries) {
+      entries.forEach(function (en) {
+        if (!en.isIntersecting) return;
+        var el = en.target;
+        if (el.matches('.stat b')) countUp(el);
+        else if (el.classList.contains('steps')) { el.style.setProperty('--fill', '1'); }
+        else {
+          var delay = el.classList.contains('step') ? Array.prototype.indexOf.call(el.parentNode.children, el) * 160 : 0;
+          setTimeout(function () { el.classList.add('in'); }, delay);
+        }
+        io.unobserve(el);
+      });
+    }, { threshold: 0.15 });
+    els.forEach(function (el) { io.observe(el); });
+  } else { els.forEach(function (el) { el.classList.add('in'); }); }
+  window.addEventListener('beforeprint', function () { els.forEach(function (el) { el.classList.add('in'); }); });
+})();
+</script>
+</body>
+</html>
